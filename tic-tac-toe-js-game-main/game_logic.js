@@ -3,6 +3,7 @@ let restartBtn = document.getElementById('restartBtn')
 let boxes = Array.from(document.getElementsByClassName('box'))
 
 let winnerIndicator = getComputedStyle(document.body).getPropertyValue('--winning-blocks')
+var ctx = document.getElementById('chart');
 
 const O_TEXT = "O"
 const X_TEXT = "X"
@@ -30,9 +31,15 @@ function boxClicked(e) {
             winning_blocks.map( box => boxes[box].style.backgroundColor=winnerIndicator)
             if(currentPlayer == X_TEXT){
                 player1_score++
+                if(player1_score == 3){
+                    create_chart(player1_score, player2_score)
+                }
                 //console.log(player1_score, player2_score);
             } else {
                 player2_score++
+                if(player1_score == 3){
+                    create_chart(player1_score, player2_score)
+                }
             }
             console.log(player1_score, player2_score);
             return
@@ -78,5 +85,33 @@ function restart() {
 
     currentPlayer = X_TEXT
 }
+
+function create_chart(p1_score, p2_score){
+    var x = ['X_TEXT', 'O_TEXT'];
+    var y = [p1_score, p2_score];
+    var z = ['red', 'green']
+    
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: x,
+        datasets: [{
+          label: 'Players scores compared',
+          data: y,
+          backgroundColor: z
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+        }]
+        }
+    }
+    })
+  }
 
 startGame()
